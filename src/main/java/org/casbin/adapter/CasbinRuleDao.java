@@ -65,14 +65,6 @@ public interface CasbinRuleDao {
     void dropOracleTable(@Param("tableName") String tableName);
 
 
-//    @Insert("<script>"  +
-//            "INSERT INTO casbin_rule (ptype,v0,v1,v2,v3,v4,v5) VALUES" +
-//            "<foreach collection=\"list\" item=\"rule\" index=\"index\"  separator=\",\">" +
-//            "(#{rule.ptype},#{rule.v0},#{rule.v1},#{rule.v2},#{rule.v3},#{rule.v4},#{rule.v5})" +
-//            "</foreach>" +
-//            "</script>")
-//    void insertData(@Param("list")List<CasbinRule> rules);
-
 
     @Insert("INSERT INTO casbin_rule (ptype,v0,v1,v2,v3,v4,v5) VALUES (#{ptype},#{v0},#{v1},#{v2},#{v3},#{v4},#{v5})")
     void insertData(CasbinRule line);
