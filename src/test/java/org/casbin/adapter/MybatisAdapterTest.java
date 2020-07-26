@@ -11,6 +11,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class MybatisAdapterTest {
+    private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+    private static final String URL = "jdbc:mysql://localhost:3306/";
+    private static final String USERNAME = "casbin_test";
+    private static final String PASSWORD = "TEST_casbin";
+
     static void testEnforce(Enforcer e, String sub, Object obj, String act, boolean res) {
         assertEquals(res, e.enforce(sub, obj, act));
     }
@@ -30,7 +35,7 @@ public class MybatisAdapterTest {
         // so we need to load the policy from the file adapter (.CSV) first.
         Enforcer e = new Enforcer("examples/rbac_model.conf", "examples/rbac_policy.csv");
 
-        MybatisAdapter a = new MybatisAdapter("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "root", "root");
+        MybatisAdapter a = new MybatisAdapter(DRIVER, URL, USERNAME, PASSWORD);
         // This is a trick to save the current policy to the DB.
         // We can't call e.savePolicy() because the adapter in the enforcer is still the file adapter.
         // The current policy means the policy in the jCasbin enforcer (aka in memory).
@@ -54,7 +59,7 @@ public class MybatisAdapterTest {
         // Now the DB has policy, so we can provide a normal use case.
         // Create an adapter and an enforcer.
         // new Enforcer() will load the policy automatically.
-        a = new MybatisAdapter("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "root", "root");
+        a = new MybatisAdapter(DRIVER, URL, USERNAME, PASSWORD);
         e = new Enforcer("examples/rbac_model.conf", a);
         testGetPolicy(e, asList(
                 asList("alice", "data1", "read"),
@@ -65,11 +70,9 @@ public class MybatisAdapterTest {
 
     }
 
-
-
     @Test
     public void testAddAndRemovePolicy() {
-        MybatisAdapter a = new MybatisAdapter("com.mysql.cj.jdbc.Driver", "jdbc:mysql://localhost:3306/", "root", "root");
+        MybatisAdapter a = new MybatisAdapter(DRIVER, URL, USERNAME, PASSWORD);
         Enforcer e = new Enforcer("examples/rbac_model.conf", a);
         testEnforce(e, "cathy", "data1", "read", false);
 
@@ -97,8 +100,4 @@ public class MybatisAdapterTest {
         a.loadPolicy(e.getModel());
         testEnforce(e, "cathy", "data1", "read", false);
     }
-
-
-
-
 }
