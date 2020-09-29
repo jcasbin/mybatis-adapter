@@ -104,7 +104,16 @@ public class MybatisAdapter implements Adapter {
     private void createDatabase(){
         SqlSession sqlSession = factory.openSession(true);
         CasbinRuleDao casbinRuleDao = sqlSession.getMapper(CasbinRuleDao.class);
-        casbinRuleDao.createDatabase("casbin");
+        
+        switch (driver) {
+            case "com.mysql.cj.jdbc.Driver":
+                casbinRuleDao.createMysqlDatabase("casbin");
+                break;
+            case "com.microsoft.sqlserver.jdbc.SQLServerDriver":
+                casbinRuleDao.createSqlServerDatabase("casbin");
+                break;
+        }
+
         sqlSession.close();
     }
 
@@ -118,6 +127,9 @@ public class MybatisAdapter implements Adapter {
                 break;
             case "com.mysql.cj.jdbc.Driver":
                 casbinRuleDao.createMysqlTable("casbin_rule");
+                break;
+            case "com.microsoft.sqlserver.jdbc.SQLServerDriver":
+                casbinRuleDao.createSqlServerTable("casbin_rule");
                 break;
         }
 
@@ -135,6 +147,9 @@ public class MybatisAdapter implements Adapter {
                 break;
             case "com.mysql.cj.jdbc.Driver":
                 casbinRuleDao.dropMysqlTable("casbin_rule");
+                break;
+            case "com.microsoft.sqlserver.jdbc.SQLServerDriver":
+                casbinRuleDao.dropSqlServerTable("casbin_rule");
                 break;
         }
 
