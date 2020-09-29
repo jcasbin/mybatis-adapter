@@ -12,7 +12,15 @@ public interface CasbinRuleDao {
     List<CasbinRule> loadAll();
 
     @Update("CREATE DATABASE IF NOT EXISTS ${databaseName}")
-    void createDatabase(@Param("databaseName") String databaseName);
+    void createMysqlDatabase(@Param("databaseName") String databaseName);
+
+    @Update("IF NOT EXISTS (" +
+            "SELECT * FROM sysdatabases WHERE name = 'casbin') CREATE DATABASE casbin ON PRIMARY " +
+            "( NAME = N'casbin', FILENAME = N'C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\DATA\\casbinDB.mdf' , SIZE = 3072KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB ) " +
+            "LOG ON\n" +
+            "( NAME = N'casbin_log', FILENAME = N'C:\\Program Files\\Microsoft SQL Server\\MSSQL.1\\MSSQL\\DATA\\casbinDB_log.ldf' , SIZE = 1024KB , MAXSIZE = 2048GB , FILEGROWTH = 10%) " +
+            "COLLATE Chinese_PRC_CI_AS")
+    void createSqlServerDatabase(@Param("databaseName") String databaseName);
 
     @Update("CREATE TABLE IF NOT EXISTS ${tableName} " +
             "(ptype VARCHAR(100) not NULL, " +
@@ -24,6 +32,17 @@ public interface CasbinRuleDao {
             " v5 VARCHAR(100))")
     void createMysqlTable(@Param("tableName") String tableName);
 
+    @Update("if not exists (select * from sysobjects where id = object_id('${tableName}')) " +
+            "create table ${tableName} (" +
+            "   ptype VARCHAR(100) not NULL, " +
+            "   v0 VARCHAR(100), " +
+            "   v1 VARCHAR(100), " +
+            "   v2 VARCHAR(100), " +
+            "   v3 VARCHAR(100), " +
+            "   v4 VARCHAR(100), " +
+            "   v5 VARCHAR(100) " +
+            ")")
+    void createSqlServerTable(@Param("tableName") String tableName);
 
     @Update("declare " +
             "nCount NUMBER;" +
@@ -49,8 +68,6 @@ public interface CasbinRuleDao {
     @Update("DROP TABLE IF EXISTS ${tableName}")
     void dropMysqlTable(@Param("tableName") String tableName);
 
-
-
     @Update("declare " +
             "nCount NUMBER;" +
             "v_sql LONG;" +
@@ -64,7 +81,8 @@ public interface CasbinRuleDao {
             "end;")
     void dropOracleTable(@Param("tableName") String tableName);
 
-
+    @Update("if exists (select * from sysobjects where id = object_id('${tableName}') drop table ${tableName}")
+    void dropSqlServerTable(@Param("tableName") String tableName);
 
     @Insert("INSERT INTO casbin_rule (ptype,v0,v1,v2,v3,v4,v5) VALUES (#{ptype},#{v0},#{v1},#{v2},#{v3},#{v4},#{v5})")
     void insertData(CasbinRule line);
