@@ -1,8 +1,8 @@
 # mybatis-adapter
 
 [![codebeat badge](https://codebeat.co/badges/998c8e12-ffdd-4196-b2a2-8979d7f1ee8a)](https://codebeat.co/projects/github-com-jcasbin-mybatis-adapter-master)
-[![Build Status](https://travis-ci.org/jcasbin/mybatis-adapter.svg?branch=master)](https://travis-ci.org/jcasbin/mybatis-adapter)
-[![Coverage Status](https://coveralls.io/repos/github/jcasbin/mybatis-adapter/badge.svg?branch=master)](https://coveralls.io/github/jcasbin/mybatis-adapter?branch=master)
+[![build](https://github.com/jcasbin/mybatis-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/jcasbin/mybatis-adapter/actions)
+[![codecov](https://codecov.io/github/jcasbin/mybatis-adapter/branch/master/graph/badge.svg?token=4YRFEQY7VK)](https://codecov.io/github/jcasbin/mybatis-adapter)
 [![javadoc](https://javadoc.io/badge2/org.casbin/mybatis-adapter/javadoc.svg)](https://javadoc.io/doc/org.casbin/mybatis-adapter)
 [![Maven Central](https://img.shields.io/maven-central/v/org.casbin/mybatis-adapter.svg)](https://mvnrepository.com/artifact/org.casbin/mybatis-adapter/latest)
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/casbin/lobby)

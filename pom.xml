@@ -18,11 +18,6 @@
         <url>https://github.com/jcasbin/mybatis-adapter/issues</url>
     </issueManagement>
 
-    <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/jcasbin/mybatis-adapter</url>
-    </ciManagement>
-
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
@@ -104,11 +99,6 @@
                                 </goals>
                             </execution>
                         </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.eluder.coveralls</groupId>
-                        <artifactId>coveralls-maven-plugin</artifactId>
-                        <version>4.3.0</version>
                     </plugin>
                     <plugin>
                         <groupId>org.jacoco</groupId>
