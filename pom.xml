@@ -146,7 +146,7 @@
         <dependency>
             <groupId>org.casbin</groupId>
             <artifactId>jcasbin</artifactId>
-            <version>1.1.0</version>
+            <version>1.31.2</version>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -164,6 +164,11 @@
             <artifactId>mssql-jdbc</artifactId>
             <version>8.2.2.jre8</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.2</version>
         </dependency>
     </dependencies>
 

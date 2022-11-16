@@ -12,17 +12,19 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 import org.casbin.jcasbin.model.Assertion;
 import org.casbin.jcasbin.model.Model;
 import org.casbin.jcasbin.persist.Adapter;
+import org.casbin.jcasbin.persist.BatchAdapter;
 import org.casbin.jcasbin.persist.Helper;
 
 import javax.sql.DataSource;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
  * MybatisAdapter is the Mybatis adapter for jCasbin.
  * It can load policy from Mybatis supported database or save policy to it.
  */
-public class MybatisAdapter implements Adapter {
+public class MybatisAdapter implements Adapter, BatchAdapter {
     private String driver;
     private String url;
     private String username;
@@ -104,7 +106,7 @@ public class MybatisAdapter implements Adapter {
     private void createDatabase(){
         SqlSession sqlSession = factory.openSession(true);
         CasbinRuleDao casbinRuleDao = sqlSession.getMapper(CasbinRuleDao.class);
-        
+
         switch (driver) {
             case "com.mysql.cj.jdbc.Driver":
                 casbinRuleDao.createMysqlDatabase("casbin");
@@ -286,12 +288,50 @@ public class MybatisAdapter implements Adapter {
 
 
     /**
+     * addPolicies adds policy rules to the storage.
+     *
+     * @param sec   the section, "p" or "g".
+     * @param ptype the policy type, "p", "p2", .. or "g", "g2", ..
+     * @param rules the policy rules.
+     */
+    @Override
+    public void addPolicies(String sec, String ptype, List<List<String>> rules) {
+        if(CollectionUtils.isEmpty(rules)) {
+            return;
+        }
+        List<CasbinRule> casbinRules = rules.stream()
+                .map(rule -> savePolicyLine(sec, rule))
+                .distinct()
+                .collect(Collectors.toList());
+
+        SqlSession sqlSession = factory.openSession(true);
+        CasbinRuleDao casbinRuleDao = sqlSession.getMapper(CasbinRuleDao.class);
+        casbinRuleDao.insertDataBatch(casbinRules);
+        sqlSession.close();
+    }
+
+
+    /**
      * removePolicy removes a policy rule from the storage.
      */
     @Override
     public void removePolicy(String sec, String ptype, List<String> rule) {
         if(CollectionUtils.isEmpty(rule)) return;
         removeFilteredPolicy(sec, ptype, 0, rule.toArray(new String[0]));
+    }
+
+    /**
+     * removePolicies removes some policy rules from the storage.
+     *
+     * @param sec   the section, "p" or "g".
+     * @param ptype the policy type, "p", "p2", .. or "g", "g2", ..
+     * @param rules the policy rules.
+     */
+    @Override
+    public void removePolicies(String sec, String ptype, List<List<String>> rules) {
+        rules.forEach(rule -> {
+            removePolicy(sec, ptype, rule);
+        });
     }
 
     /**

@@ -87,6 +87,15 @@ public interface CasbinRuleDao {
     @Insert("INSERT INTO casbin_rule (ptype,v0,v1,v2,v3,v4,v5) VALUES (#{ptype},#{v0},#{v1},#{v2},#{v3},#{v4},#{v5})")
     void insertData(CasbinRule line);
 
+    @Insert({"<script>",
+            "INSERT INTO casbin_rule (ptype, v0, v1, v2, v3, v4, v5) VALUES ",
+            "<foreach collection='list' item='item' separator=','>",
+            "(#{item.ptype}, #{item.v0}, #{item.v1}, #{item.v2}, #{item.v3}, #{item.v4}, #{item.v5})",
+            "</foreach>",
+            "</script>"
+    })
+    void insertDataBatch(@Param("list") List<CasbinRule> rules);
+
     @Insert("<script>"  +
             "DELETE FROM casbin_rule WHERE ptype = #{ptype}" +
             "<foreach collection=\"list\" item=\"item1\" index=\"index\"  separator=\" \">" +
@@ -94,5 +103,4 @@ public interface CasbinRuleDao {
             "</foreach>" +
             "</script>")
     void deleteData(@Param("ptype") String ptype, @Param("list") List<String> rules);
-
 }

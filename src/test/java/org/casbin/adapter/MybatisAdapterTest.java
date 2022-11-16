@@ -100,4 +100,45 @@ public class MybatisAdapterTest {
         a.loadPolicy(e.getModel());
         testEnforce(e, "cathy", "data1", "read", false);
     }
+
+    @Test
+    public void testAddAndRemovePolicyBatch() {
+        MybatisAdapter a = new MybatisAdapter(DRIVER, URL, USERNAME, PASSWORD);
+        Enforcer e = new Enforcer("examples/rbac_model.conf", a);
+
+        // test addPolicies()
+        e.clearPolicy();
+        e.addPolicies(asList(
+                asList("alice", "data1", "read"),
+                asList("bob", "data2", "write"),
+                asList("data2_admin", "data2", "read"),
+                asList("data2_admin", "data2", "write")
+        ));
+        e.clearPolicy();
+        a.loadPolicy(e.getModel());
+        testEnforce(e, "alice", "data1", "read", true);
+        testEnforce(e, "bob", "data2", "write", true);
+        testEnforce(e, "data2_admin", "data2", "read", true);
+        testEnforce(e, "data2_admin", "data2", "write", true);
+
+        // test removePolicies()
+        e.clearPolicy();
+        a.savePolicy(e.getModel());
+        e.addPolicies(asList(
+                asList("alice", "data1", "read"),
+                asList("bob", "data2", "write"),
+                asList("data2_admin", "data2", "read"),
+                asList("data2_admin", "data2", "write")
+        ));
+        e.removePolicies(asList(
+                asList("alice", "data1", "read"),
+                asList("bob", "data2", "write")
+        ));
+        e.clearPolicy();
+        a.loadPolicy(e.getModel());
+        testEnforce(e, "alice", "data1", "read", false);
+        testEnforce(e, "bob", "data2", "write", false);
+        testEnforce(e, "data2_admin", "data2", "read", true);
+        testEnforce(e, "data2_admin", "data2", "write", true);
+    }
 }
