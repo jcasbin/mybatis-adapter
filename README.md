@@ -5,7 +5,7 @@
 [![codecov](https://codecov.io/github/jcasbin/mybatis-adapter/branch/master/graph/badge.svg?token=4YRFEQY7VK)](https://codecov.io/github/jcasbin/mybatis-adapter)
 [![javadoc](https://javadoc.io/badge2/org.casbin/mybatis-adapter/javadoc.svg)](https://javadoc.io/doc/org.casbin/mybatis-adapter)
 [![Maven Central](https://img.shields.io/maven-central/v/org.casbin/mybatis-adapter.svg)](https://mvnrepository.com/artifact/org.casbin/mybatis-adapter/latest)
-[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/casbin/lobby)
+[![Discord](https://img.shields.io/discord/1022748306096537660?logo=discord&label=discord&color=5865F2)](https://discord.gg/S5UjpzGZjN)
 
 Mybatis Adapter is the Mybatis adapter for jCasbin, which provides interfaces for loading policies from Mybatis and saving policies to it.
 
