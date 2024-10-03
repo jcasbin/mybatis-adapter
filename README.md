@@ -14,7 +14,7 @@ Mybatis Adapter is the Mybatis adapter for jCasbin, which provides interfaces fo
     <dependency>
         <groupId>org.casbin</groupId>
         <artifactId>mybatis-adapter</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>version</version>
     </dependency>
     
 ## Example
