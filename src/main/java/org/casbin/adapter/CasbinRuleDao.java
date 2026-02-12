@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CasbinRuleDao {
     @Select("select * from casbin_rule")
@@ -103,4 +104,15 @@ public interface CasbinRuleDao {
             "</foreach>" +
             "</script>")
     void deleteData(@Param("ptype") String ptype, @Param("list") List<String> rules);
+
+    @Select("<script>" +
+            "SELECT * FROM casbin_rule WHERE 1=1" +
+            "<foreach collection='conditions' item='condition' separator=' '>" +
+            "<choose>" +
+            "<when test='combineType == \"OR\"'> OR (${condition})</when>" +
+            "<otherwise> AND (${condition})</otherwise>" +
+            "</choose>" +
+            "</foreach>" +
+            "</script>")
+    List<CasbinRule> selectByConditions(Map<String, Object> params);
 }

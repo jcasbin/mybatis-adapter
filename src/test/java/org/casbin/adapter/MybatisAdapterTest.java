@@ -4,10 +4,13 @@ import org.casbin.jcasbin.main.Enforcer;
 import org.casbin.jcasbin.util.Util;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class MybatisAdapterTest {
@@ -140,5 +143,44 @@ public class MybatisAdapterTest {
         testEnforce(e, "bob", "data2", "write", false);
         testEnforce(e, "data2_admin", "data2", "read", true);
         testEnforce(e, "data2_admin", "data2", "write", true);
+    }
+
+    @Test
+    public void testConditionsToMyBatisQuery() {
+        MybatisAdapter a = new MybatisAdapter(DRIVER, URL, USERNAME, PASSWORD);
+        Enforcer e = new Enforcer("examples/rbac_model.conf", a);
+
+        // Clear existing policies and add test data
+        e.clearPolicy();
+        e.addPolicy("alice", "data1", "read");
+        e.addPolicy("bob", "data2", "write");
+        e.addPolicy("alice", "data3", "read");
+        e.addPolicy("charlie", "data1", "write");
+
+        // Test with OR combineType
+        List<String> conditionsOr = new ArrayList<>();
+        conditionsOr.add("v0 = 'alice'");
+        conditionsOr.add("v1 = 'data1'");
+
+        List<CasbinRule> resultsOr = a.conditionsToMyBatisQuery(conditionsOr, CombineType.OR);
+        assertNotNull(resultsOr);
+        assertTrue("Should find at least one rule with OR conditions", resultsOr.size() >= 1);
+
+        // Test with AND combineType
+        List<String> conditionsAnd = new ArrayList<>();
+        conditionsAnd.add("v0 = 'alice'");
+        conditionsAnd.add("v1 = 'data1'");
+
+        List<CasbinRule> resultsAnd = a.conditionsToMyBatisQuery(conditionsAnd, CombineType.AND);
+        assertNotNull(resultsAnd);
+        
+        // Verify the AND results are more specific than OR
+        assertTrue("AND should return 1 or fewer results than OR", resultsAnd.size() <= resultsOr.size());
+
+        // Test with empty conditions
+        List<String> emptyConditions = new ArrayList<>();
+        List<CasbinRule> emptyResults = a.conditionsToMyBatisQuery(emptyConditions, CombineType.OR);
+        assertNotNull(emptyResults);
+        assertTrue("Empty conditions should return empty results", emptyResults.isEmpty());
     }
 }
