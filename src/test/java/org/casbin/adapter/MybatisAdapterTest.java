@@ -157,25 +157,50 @@ public class MybatisAdapterTest {
         e.addPolicy("alice", "data3", "read");
         e.addPolicy("charlie", "data1", "write");
 
-        // Test with OR combineType
+        // Test with OR combineType - should find rules matching either v0='alice' OR v1='data1'
         List<String> conditionsOr = new ArrayList<>();
         conditionsOr.add("v0 = 'alice'");
         conditionsOr.add("v1 = 'data1'");
 
         List<CasbinRule> resultsOr = a.conditionsToMyBatisQuery(conditionsOr, CombineType.OR);
         assertNotNull(resultsOr);
-        assertTrue("Should find at least one rule with OR conditions", resultsOr.size() >= 1);
+        assertTrue("Should find at least 3 rules with OR conditions (alice+data1, alice+data3, charlie+data1)", resultsOr.size() >= 3);
+        
+        // Verify that OR results include alice rules and charlie+data1 rule
+        boolean hasAliceData1 = false;
+        boolean hasAliceData3 = false;
+        boolean hasCharlieData1 = false;
+        for (CasbinRule rule : resultsOr) {
+            if ("alice".equals(rule.getV0()) && "data1".equals(rule.getV1())) {
+                hasAliceData1 = true;
+            }
+            if ("alice".equals(rule.getV0()) && "data3".equals(rule.getV1())) {
+                hasAliceData3 = true;
+            }
+            if ("charlie".equals(rule.getV0()) && "data1".equals(rule.getV1())) {
+                hasCharlieData1 = true;
+            }
+        }
+        assertTrue("OR should include alice+data1", hasAliceData1);
+        assertTrue("OR should include alice+data3", hasAliceData3);
+        assertTrue("OR should include charlie+data1", hasCharlieData1);
 
-        // Test with AND combineType
+        // Test with AND combineType - should find only rules matching both v0='alice' AND v1='data1'
         List<String> conditionsAnd = new ArrayList<>();
         conditionsAnd.add("v0 = 'alice'");
         conditionsAnd.add("v1 = 'data1'");
 
         List<CasbinRule> resultsAnd = a.conditionsToMyBatisQuery(conditionsAnd, CombineType.AND);
         assertNotNull(resultsAnd);
+        assertEquals("AND should return exactly 1 result (alice+data1)", 1, resultsAnd.size());
         
-        // Verify the AND results are more specific than OR
-        assertTrue("AND should return equal or fewer results than OR", resultsAnd.size() <= resultsOr.size());
+        // Verify the AND result is the specific alice+data1 rule
+        CasbinRule andResult = resultsAnd.get(0);
+        assertEquals("AND result should have v0='alice'", "alice", andResult.getV0());
+        assertEquals("AND result should have v1='data1'", "data1", andResult.getV1());
+        
+        // Verify that AND returns fewer results than OR
+        assertTrue("AND should return fewer results than OR", resultsAnd.size() < resultsOr.size());
 
         // Test with empty conditions
         List<String> emptyConditions = new ArrayList<>();

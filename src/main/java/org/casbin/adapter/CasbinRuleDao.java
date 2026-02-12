@@ -119,7 +119,7 @@ public interface CasbinRuleDao {
             "<foreach collection='conditions' item='condition' index='index' open='(' close=')' separator=''>" +
             "<if test='index > 0'>" +
             "<choose>" +
-            "<when test='combineType == \"OR\"'> OR </when>" +
+            "<when test='combineType.equals(\"OR\")'> OR </when>" +
             "<otherwise> AND </otherwise>" +
             "</choose>" +
             "</if>" +
