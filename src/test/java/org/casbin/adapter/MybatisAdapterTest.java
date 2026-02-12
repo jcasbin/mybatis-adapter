@@ -152,6 +152,7 @@ public class MybatisAdapterTest {
 
         // Clear existing policies and add test data
         e.clearPolicy();
+        a.savePolicy(e.getModel());  // Actually clear the database table
         e.addPolicy("alice", "data1", "read");
         e.addPolicy("bob", "data2", "write");
         e.addPolicy("alice", "data3", "read");
