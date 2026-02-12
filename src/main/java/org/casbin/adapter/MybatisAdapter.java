@@ -347,4 +347,29 @@ public class MybatisAdapter implements Adapter, BatchAdapter {
         casbinRuleDao.deleteData(ptype, values);
         sqlSession.close();
     }
+
+    /**
+     * conditionsToMyBatisQuery is a function that converts multiple query conditions into a MyBatis query statement.
+     * You can use the GetAllowedObjectConditions() API of Casbin to get conditions,
+     * and choose the way of combining conditions through combineType.
+     *
+     * WARNING: This method executes SQL conditions directly. Ensure that conditions are generated
+     * by Casbin's GetAllowedObjectConditions() or other trusted sources, not from user input.
+     *
+     * @param conditions the list of query conditions (e.g., ["category_id = 1", "author = 'alice'"])
+     * @param combineType the way to combine conditions (OR or AND)
+     * @return the list of CasbinRule matching the conditions
+     */
+    public List<CasbinRule> conditionsToMyBatisQuery(List<String> conditions, CombineType combineType) {
+        if (CollectionUtils.isEmpty(conditions)) {
+            return new ArrayList<>();
+        }
+
+        SqlSession sqlSession = factory.openSession(true);
+        try {
+            return ConditionsHelper.conditionsToMyBatisQuery(sqlSession, conditions, combineType);
+        } finally {
+            sqlSession.close();
+        }
+    }
 }

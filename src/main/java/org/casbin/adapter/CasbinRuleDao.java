@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CasbinRuleDao {
     @Select("select * from casbin_rule")
@@ -103,4 +104,27 @@ public interface CasbinRuleDao {
             "</foreach>" +
             "</script>")
     void deleteData(@Param("ptype") String ptype, @Param("list") List<String> rules);
+
+    /**
+     * Select casbin rules by dynamic conditions.
+     * WARNING: This method uses ${condition} syntax which allows direct SQL interpolation.
+     * The caller is responsible for ensuring conditions are safe and not user-controlled.
+     * This is intended for use with Casbin's GetAllowedObjectConditions() API.
+     *
+     * @param params Map containing 'conditions' (List of SQL condition strings) and 'combineType' (OR/AND)
+     * @return List of CasbinRule matching the conditions
+     */
+    @Select("<script>" +
+            "SELECT * FROM casbin_rule WHERE " +
+            "<foreach collection='conditions' item='condition' index='index' open='(' close=')' separator=''>" +
+            "<if test='index > 0'>" +
+            "<choose>" +
+            "<when test='combineType.equals(\"OR\")'> OR </when>" +
+            "<otherwise> AND </otherwise>" +
+            "</choose>" +
+            "</if>" +
+            "(${condition})" +
+            "</foreach>" +
+            "</script>")
+    List<CasbinRule> selectByConditions(Map<String, Object> params);
 }
