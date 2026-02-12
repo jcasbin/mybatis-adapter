@@ -106,12 +106,15 @@ public interface CasbinRuleDao {
     void deleteData(@Param("ptype") String ptype, @Param("list") List<String> rules);
 
     @Select("<script>" +
-            "SELECT * FROM casbin_rule WHERE 1=1" +
-            "<foreach collection='conditions' item='condition' separator=' '>" +
+            "SELECT * FROM casbin_rule WHERE " +
+            "<foreach collection='conditions' item='condition' index='index' open='(' close=')' separator=''>" +
+            "<if test='index > 0'>" +
             "<choose>" +
-            "<when test='combineType == \"OR\"'> OR (${condition})</when>" +
-            "<otherwise> AND (${condition})</otherwise>" +
+            "<when test='combineType == \"OR\"'> OR </when>" +
+            "<otherwise> AND </otherwise>" +
             "</choose>" +
+            "</if>" +
+            "(${condition})" +
             "</foreach>" +
             "</script>")
     List<CasbinRule> selectByConditions(Map<String, Object> params);

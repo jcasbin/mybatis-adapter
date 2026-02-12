@@ -42,6 +42,58 @@ Mybatis Adapter is the Mybatis adapter for jCasbin, which provides interfaces fo
             a.loadPolicy(e.getModel());
         }
     }
+
+## ConditionsToMyBatisQuery
+
+`conditionsToMyBatisQuery()` is a function that converts multiple query conditions into a MyBatis query statement.
+You can use the `GetAllowedObjectConditions()` API of Casbin to get conditions,
+and choose the way of combining conditions through `CombineType`.
+
+`conditionsToMyBatisQuery()` allows Casbin to be combined with SQL, and you can use it to implement many functions.
+
+### Example
+
+```java
+package com.company.example;
+
+import org.casbin.jcasbin.main.Enforcer;
+import org.casbin.adapter.MybatisAdapter;
+import org.casbin.adapter.CombineType;
+import org.casbin.adapter.CasbinRule;
+import java.util.List;
+import java.util.ArrayList;
+
+public class ConditionsExample {
+    public void test() {
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://localhost:3306/casbin";
+        String username = "YourUsername";
+        String password = "YourPassword";
+        
+        MybatisAdapter a = new MybatisAdapter(driver, url, username, password, true);
+        Enforcer e = new Enforcer("examples/rbac_model.conf", a);
+        
+        // Get allowed object conditions from Casbin
+        // For example: ["category_id = 1", "author = 'alice'"]
+        List<String> conditions = new ArrayList<>();
+        conditions.add("v0 = 'alice'");
+        conditions.add("v1 = 'data1'");
+        
+        // Combine conditions with OR
+        List<CasbinRule> resultsOr = a.conditionsToMyBatisQuery(conditions, CombineType.OR);
+        // SQL: SELECT * FROM casbin_rule WHERE (v0 = 'alice') OR (v1 = 'data1')
+        
+        // Combine conditions with AND
+        List<CasbinRule> resultsAnd = a.conditionsToMyBatisQuery(conditions, CombineType.AND);
+        // SQL: SELECT * FROM casbin_rule WHERE (v0 = 'alice') AND (v1 = 'data1')
+        
+        // Process results
+        for (CasbinRule rule : resultsOr) {
+            System.out.println(rule.toString());
+        }
+    }
+}
+```
     
 ## Getting Help
 
