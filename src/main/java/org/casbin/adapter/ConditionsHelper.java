@@ -1,6 +1,7 @@
 package org.casbin.adapter;
 
 import org.apache.ibatis.session.SqlSession;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +23,7 @@ public class ConditionsHelper {
      */
     public static List<CasbinRule> conditionsToMyBatisQuery(SqlSession sqlSession, List<String> conditions, CombineType combineType) {
         if (conditions == null || conditions.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         CasbinRuleDao casbinRuleDao = sqlSession.getMapper(CasbinRuleDao.class);

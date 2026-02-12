@@ -175,7 +175,7 @@ public class MybatisAdapterTest {
         assertNotNull(resultsAnd);
         
         // Verify the AND results are more specific than OR
-        assertTrue("AND should return 1 or fewer results than OR", resultsAnd.size() <= resultsOr.size());
+        assertTrue("AND should return equal or fewer results than OR", resultsAnd.size() <= resultsOr.size());
 
         // Test with empty conditions
         List<String> emptyConditions = new ArrayList<>();

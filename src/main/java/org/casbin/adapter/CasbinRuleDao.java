@@ -105,6 +105,15 @@ public interface CasbinRuleDao {
             "</script>")
     void deleteData(@Param("ptype") String ptype, @Param("list") List<String> rules);
 
+    /**
+     * Select casbin rules by dynamic conditions.
+     * WARNING: This method uses ${condition} syntax which allows direct SQL interpolation.
+     * The caller is responsible for ensuring conditions are safe and not user-controlled.
+     * This is intended for use with Casbin's GetAllowedObjectConditions() API.
+     *
+     * @param params Map containing 'conditions' (List of SQL condition strings) and 'combineType' (OR/AND)
+     * @return List of CasbinRule matching the conditions
+     */
     @Select("<script>" +
             "SELECT * FROM casbin_rule WHERE " +
             "<foreach collection='conditions' item='condition' index='index' open='(' close=')' separator=''>" +

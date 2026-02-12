@@ -353,6 +353,9 @@ public class MybatisAdapter implements Adapter, BatchAdapter {
      * You can use the GetAllowedObjectConditions() API of Casbin to get conditions,
      * and choose the way of combining conditions through combineType.
      *
+     * WARNING: This method executes SQL conditions directly. Ensure that conditions are generated
+     * by Casbin's GetAllowedObjectConditions() or other trusted sources, not from user input.
+     *
      * @param conditions the list of query conditions (e.g., ["category_id = 1", "author = 'alice'"])
      * @param combineType the way to combine conditions (OR or AND)
      * @return the list of CasbinRule matching the conditions
