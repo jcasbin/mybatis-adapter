@@ -1,6 +1,5 @@
 # mybatis-adapter
 
-[![codebeat badge](https://codebeat.co/badges/998c8e12-ffdd-4196-b2a2-8979d7f1ee8a)](https://codebeat.co/projects/github-com-jcasbin-mybatis-adapter-master)
 [![build](https://github.com/jcasbin/mybatis-adapter/actions/workflows/ci.yml/badge.svg)](https://github.com/jcasbin/mybatis-adapter/actions)
 [![codecov](https://codecov.io/github/jcasbin/mybatis-adapter/branch/master/graph/badge.svg?token=4YRFEQY7VK)](https://codecov.io/github/jcasbin/mybatis-adapter)
 [![javadoc](https://javadoc.io/badge2/org.casbin/mybatis-adapter/javadoc.svg)](https://javadoc.io/doc/org.casbin/mybatis-adapter)
